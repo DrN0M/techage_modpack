@@ -282,6 +282,20 @@ function techage.is_air_like(name)
 	return false
 end
 
+
+function dump(o)
+	if type(o) == 'table' then
+		local s = '{ '
+		for k,v in pairs(o) do
+			if type(k) ~= 'number' then k = '"'..k..'"' end
+			s = s .. '['..k..'] = ' .. dump(v) .. ','
+		end
+		return s .. '} '
+	else
+		return tostring(o)
+	end
+end
+
 -- returns true, if node can be dug, otherwise false
 function techage.can_dig_node(name, ndef)
 	if not ndef then return false end
@@ -293,6 +307,12 @@ function techage.can_dig_node(name, ndef)
 		SimpleNodes[name] = true
 		return true
 	end
+
+	if ndef.groups and ndef.groups.techage_door == 1 then
+		SimpleNodes[name] = true
+		return true
+	end
+
 	if name == "ignore" then
 		SimpleNodes[name] = false
 		return false
@@ -301,7 +321,13 @@ function techage.can_dig_node(name, ndef)
 		SimpleNodes[name] = true
 		return true
 	end
+
 	if ndef.buildable_to == true then
+		SimpleNodes[name] = true
+		return true
+	end
+
+	if ndef.groups['jit_shadow'] == 1 then
 		SimpleNodes[name] = true
 		return true
 	end
